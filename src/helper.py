@@ -1,24 +1,30 @@
 import os
 from git import Repo
 from langchain.document_loaders.generic import GenericLoader
-from langchain.document_loaders.parsers import LangauageParser
+from langchain.document_loaders.parsers import LanguageParser
 from langchain.text_splitter import Language
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain_google_genai import GoogleGenerativeAIEmbeddings 
+import shutil
+from git import rmtree
+#rmtree('./cloned_repo')
 
 # Clone any github repositories
 def repo_ingestion(repo_url):
+    if os.path.isdir("repo/"):
+        rmtree('repo/')      
+
     os.makedirs("repo",exist_ok=True)
     repo_path = "repo/"
-    Repo.Clone_from(repo_url,to_path=repo_path)
+    Repo.clone_from(repo_url,to_path=repo_path)
 
 # Loading repositories as documents
 def load_repo(repo_path):
     loader = GenericLoader.from_filesystem(repo_path,
                                            glob = "**/*",
                                            suffixes = [".py"],
-                                           parser = LangauageParser(language = Language.PYTHON,parser_threshold=500))
+                                           parser = LanguageParser(language = Language.PYTHON,parser_threshold=500))
     documents = loader.load()
     return documents
 

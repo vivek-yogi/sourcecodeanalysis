@@ -2,6 +2,7 @@ google-generativeai
 langchain-google-genai 
 langchain
 langchain-community
+GitPython
 flask
 chromadb
 python-dotenv

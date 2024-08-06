@@ -1,3 +1,5 @@
+import warnings
+warnings.filterwarnings('ignore')
 from langchain.vectorstores import Chroma
 from dotenv import load_dotenv
 import os 
@@ -11,18 +13,11 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 app = Flask(__name__)
 load_dotenv()
 
-embeddings = load_embedding()
+embeddings        = load_embedding()
 persist_directory = "db"
 
 # Now we can load the persisted database from disk, and use it as normal.
 vectordb = Chroma(persist_directory = persist_directory, embedding_function = embeddings)
-
-
-# retriever = vectordb.as_retriever(search_kwargs={"k": 2})
-# docs = retriever.get_relevant_documents("what is data ingestion function?")
-# print(docs)
-
-#llm = ChatOpenAI()
 
 llm    = ChatGoogleGenerativeAI(model = "gemini-1.5-pro")
 memory = ConversationSummaryMemory(llm = llm, memory_key = "chat_history", return_messages=True)
@@ -37,15 +32,13 @@ def index():
 
 @app.route('/chatbot', methods=["GET", "POST"])
 def gitRepo():
-
+    
     if request.method == 'POST':
         user_input = request.form['question']
         repo_ingestion(user_input)
         os.system("python store_index.py")
 
     return jsonify({"response": str(user_input) })
-
-
 
 
 @app.route("/get", methods=["GET", "POST"])
@@ -59,7 +52,7 @@ def chat():
 
     result = qa(input)
     print(result['answer'])
-    return str(result["answer"])
+    return (str(result["answer"]))
 
 
 
